@@ -1,6 +1,6 @@
-package data
+package simple
 
-type Source1[T any] interface {
+type Source[T any] interface {
 	Change(value T) error
 	Value() (T, error)
 }

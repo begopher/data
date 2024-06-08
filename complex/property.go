@@ -1,18 +1,22 @@
-package data
+package complex
 
-func Complex[T interface { Checksum() uint32 }] (
+import(
+	"github.com/begopher/data"
+)
+
+func Property[T interface { Checksum() uint32 }] (
 	value *T,
 	checksum uint32,
-	constraint Constraint[T],
-	source Source2[T],
-) Property[T] {
+	constraint data.Constraint[T],
+	source Source[T],
+) data.Property[T] {
         if constraint == nil {
-	   panic("data.Complex: constraint cannot be nil")
+	   panic("complex.Property: constraint cannot be nil")
 	}
 	if source == nil {
-	   panic("data.Complex: source cannot be nil")
+	   panic("complex.Property: source cannot be nil")
 	}
-	return &complex[T]{
+	return &property[T]{
 	       value:      value,
 	       checksum:   checksum,
 	       constraint: constraint,
@@ -20,14 +24,14 @@ func Complex[T interface { Checksum() uint32 }] (
 	}
 }
 
-type complex[T interface{ Checksum() uint32 }] struct {
+type property[T interface{ Checksum() uint32 }] struct {
 	value *T
 	checksum uint32
-	constraint Constraint[T]
-	source Source2[T]
+	constraint data.Constraint[T]
+	source Source[T]
 }
 
-func (e *complex[T]) Change(value T) (error, bool) {
+func (e *property[T]) Change(value T) (error, bool) {
 	checksum := value.Checksum()
 	if checksum == e.checksum {
 		return nil, false
@@ -44,7 +48,7 @@ func (e *complex[T]) Change(value T) (error, bool) {
 	return err, false
 }
 
-func (e *complex[T]) Value() (T, error) {
+func (e *property[T]) Value() (T, error) {
 	if e.value != nil {
 		return *e.value, nil
 	}

@@ -1,30 +1,34 @@
-package data
+package simple
 
-func Simple[T comparable] (
+import(
+	"github.com/begopher/data"
+)
+
+func Property[T comparable] (
 	value *T,
-	constraint Constraint[T],
-	source Source1[T],
-) Property[T] {
+	constraint data.Constraint[T],
+	source Source[T],
+) data.Property[T] {
         if constraint == nil {
-	   panic("data.Simple: constraint cannot be nil")
+	   panic("simple.Property: constraint cannot be nil")
 	}
 	if source == nil {
-	   panic("data.Simple: source cannot be nil")
+	   panic("simple.Property: source cannot be nil")
 	}
-	return &simple[T]{
+	return &property[T]{
 	       value:      value,
 	       constraint: constraint,
 	       source:     source,
 	}
 }
 
-type simple[T comparable] struct {
+type property[T comparable] struct {
 	value *T
-	constraint Constraint[T]
-	source Source1[T]
+	constraint data.Constraint[T]
+	source Source[T]
 }
 
-func (s *simple[T]) Change(value T) (error, bool) {
+func (s *property[T]) Change(value T) (error, bool) {
 	got, err:= s.Value()
 	if err != nil{
 		return err, false
@@ -42,7 +46,7 @@ func (s *simple[T]) Change(value T) (error, bool) {
 	return nil, true
 }
 
-func (s *simple[T]) Value() (T, error) {
+func (s *property[T]) Value() (T, error) {
 	if s.value != nil {
 		return *s.value, nil
 	}
